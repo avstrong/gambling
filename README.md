@@ -30,7 +30,99 @@ make build-app
 ./bin/app start
 ```
 
-Use make help to view a list of available commands.
+Use **make help** to view a list of available commands.
+
+## Testing With Make Commands
+
+For convenience and to facilitate the testing process of the Gambling Game API, we've provided a series of `make` commands. These commands allow you to easily simulate actions such as registering users, making deposits and withdrawals, checking balances, creating games, registering players, and starting games. Below is a guide on how to use these commands with examples:
+
+### Register a User
+
+To register a new user, you need to provide an email address:
+
+```bash
+make register-user email=newuser@example.com
+```
+
+### Deposit Funds
+
+To deposit funds into a user's account, specify the user (email), amount, and currency. The amount and currency are optional and default to 10 USD if not provided:
+
+```bash
+make deposit-funds user=newuser@example.com amount=25 currency=EUR
+```
+
+Using default values for amount and currency:
+
+```bash
+make deposit-funds user=newuser@example.com
+```
+
+### Withdraw Funds
+
+To withdraw funds from a user's account, you need to specify the user (email), and you can optionally specify the amount and currency:
+
+```bash
+make withdraw-funds user=newuser@example.com amount=15 currency=USD
+```
+
+Using default values for amount and currency:
+
+```bash
+make withdraw-funds user=newuser@example.com
+```
+
+### Check Balance
+
+To check the balance of a user's account, specify the user (email) and optionally the currency. The default currency is USD:
+
+```bash
+make check-balance user=newuser@example.com currency=USD
+```
+
+Using default values for currency:
+
+```bash
+make check-balance user=newuser@example.com
+```
+
+### Create a Game
+
+To create a game, you can specify maxPlayers, entryFee, and entryCurrency. If these parameters are not provided, default values are used:
+
+```bash
+make create-game maxPlayers=1 entryFee=2 entryCurrency=USD
+```
+
+Using default values for currency, maxPlayers and entryCurrency:
+
+```bash
+make create-game
+```
+
+### Register a Player for a Game
+
+To register a player for a game, you must provide the gameID, user (email), and optionally the playerChoice. The default playerChoice is false:
+
+```bash
+make register-player gameID={gameID} user=newuser@example.com playerChoice=true
+```
+
+Using default values for playerChoice:
+
+```bash
+make register-player gameID={gameID} user=newuser@example.com
+```
+
+### Start a Game
+
+To start a game, you need to provide the gameID:
+
+```bash
+make play-game gameID={gameID}
+```
+
+These commands provide a quick and easy way to test various functionalities of the API, enhancing the overall testing experience.
 
 ### API Endpoints
 

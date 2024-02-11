@@ -76,3 +76,87 @@ generate-proto:
         --grpc-gateway_opt=logtostderr=true \
         --grpc-gateway_opt=paths=import \
         api/proto/server.proto
+
+COLOR := "\e[1;36m%s\e[0m\n"
+
+.PHONY: register-user
+register-user: ## Register a new user with dynamic email
+	@if [ -z "$(email)" ]; then \
+		echo "ERROR: 'email' is required"; \
+		exit 1; \
+	fi
+	@printf $(COLOR) "Registering $(email) ..."
+	@curl -X POST http://localhost:9092/api/v1/user \
+	-H "Content-Type: application/json" \
+	-d '{"email": "$(email)"}'
+
+.PHONY: deposit-funds
+deposit-funds: ## Deposit funds for a user with dynamic amount and currency, defaults to 10 USD
+	@if [ -z "$(user)" ]; then \
+		echo "ERROR: 'user' is required"; \
+		exit 1; \
+	fi
+	$(eval amount := $(if $(amount),$(amount),10))
+	$(eval currency := $(if $(currency),$(currency),USD))
+	@printf $(COLOR) "Depositing $(amount) $(currency) for $(user) ..."
+	@curl -X POST http://localhost:9092/api/v1/wallet/deposit \
+	-H "Content-Type: application/json" \
+	-d '{"userID": "$(user)", "amount": $(amount), "currency": "$(currency)"}'
+
+.PHONY: withdraw-funds
+withdraw-funds: ## Withdraw funds for a user with dynamic amount and currency, defaults to 10 USD
+	@if [ -z "$(user)" ]; then \
+		echo "ERROR: 'user' is required"; \
+		exit 1; \
+	fi
+	$(eval amount := $(if $(amount),$(amount),10))
+	$(eval currency := $(if $(currency),$(currency),USD))
+	@printf $(COLOR) "Withdrawing $(amount) $(currency) for $(user) ..."
+	@curl -X POST http://localhost:9092/api/v1/wallet/withdraw \
+	-H "Content-Type: application/json" \
+	-d '{"userID": "$(user)", "amount": $(amount), "currency": "$(currency)"}'
+
+.PHONY: check-balance
+check-balance: ## Check balance of a user, defaults to USD
+	@if [ -z "$(user)" ]; then \
+		echo "ERROR: 'user' is required"; \
+		exit 1; \
+	fi
+	$(eval currency := $(if $(currency),$(currency),USD))
+	@printf $(COLOR) "Checking balance for $(user) in $(currency) ..."
+	@curl -X GET http://localhost:9092/api/v1/wallet/balance \
+	-H "Content-Type: application/json" \
+	-d '{"userID": "$(user)", "currency": "$(currency)"}'
+
+.PHONY: create-game
+create-game: ## Create a new game with optional attributes, defaults to 2 maxPlayers, 10 entryFee, and USD
+	$(eval maxPlayers := $(if $(maxPlayers),$(maxPlayers),2))
+	$(eval entryFee := $(if $(entryFee),$(entryFee),10))
+	$(eval entryCurrency := $(if $(entryCurrency),$(entryCurrency),USD))
+	@printf $(COLOR) "Creating a new game ..."
+	@curl -X POST http://localhost:9092/api/v1/game \
+	-H "Content-Type: application/json" \
+	-d '{"name": "game 1", "maxPlayers": $(maxPlayers), "entryFee": $(entryFee), "entryCurrency": "$(entryCurrency)"}'
+
+.PHONY: register-player
+register-player: ## Register a player for a game with dynamic choice, defaults to false
+	@if [ -z "$(gameID)" ] || [ -z "$(user)" ]; then \
+		echo "ERROR: 'gameID' and 'user' are required"; \
+		exit 1; \
+	fi
+	$(eval playerChoice := $(if $(playerChoice),$(playerChoice),false))
+	@printf $(COLOR) "Registering a player for gameID $(gameID) with choice $(playerChoice) ..."
+	@curl -X POST http://localhost:9092/api/v1/game/register \
+	-H "Content-Type: application/json" \
+	-d '{"gameID": "$(gameID)", "userID": "$(user)", "playerChoice": $(playerChoice)}'
+
+.PHONY: play-game
+play-game: ## Start the game with dynamic gameID
+	@if [ -z "$(gameID)" ]; then \
+		echo "ERROR: 'gameID' is required"; \
+		exit 1; \
+	fi
+	@printf $(COLOR) "Starting the game with gameID $(gameID) ..."
+	@curl -X POST http://localhost:9092/api/v1/game/play \
+	-H "Content-Type: application/json" \
+	-d '{"id": "$(gameID)"}'
