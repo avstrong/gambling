@@ -7,11 +7,10 @@ import (
 	"emperror.dev/errors"
 	"github.com/avstrong/gambling/internal/wallet"
 	"github.com/go-playground/validator/v10"
-	"github.com/google/uuid"
 )
 
 type WithdrawInput struct {
-	UserID   uuid.UUID       `validate:"required,uuid4"`
+	UserID   string          `validate:"required,email"`
 	Amount   float64         `validate:"required,gte=0"`
 	Currency wallet.Currency `validate:"required"`
 }
@@ -54,7 +53,7 @@ func (s *Service) Withdraw(ctx context.Context, input *WithdrawInput) (*Withdraw
 		return nil, errors.Wrapf(err, "take out %v amount from the account", input.Amount)
 	}
 
-	if err = s.storage.SaveUser(ctx, u); err != nil {
+	if err = s.storage.UpdateUser(ctx, u); err != nil {
 		return nil, errors.Wrapf(err, "save user balance %v", u.ID())
 	}
 

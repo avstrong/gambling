@@ -51,7 +51,7 @@ func start(ctx context.Context, conf *config.Config, _ *zerolog.Logger) *cobra.C
 
 			reflection.Register(grpcSrv)
 
-			srv, err := builder.HTTPServer(ctx, conf)
+			srv, err := builder.HTTPServer(ctx, conf, zerolog.Ctx(ctx))
 			if err != nil {
 				return errors.Wrap(err, "build http server")
 			}
@@ -67,9 +67,9 @@ func start(ctx context.Context, conf *config.Config, _ *zerolog.Logger) *cobra.C
 				cancel()
 			}()
 
-			listener, err := net.Listen(conf.GRPC().NetworkType(), conf.GRPC().Port())
+			listener, err := net.Listen(conf.GRPC().NetworkType(), net.JoinHostPort(conf.GRPC().Host(), conf.GRPC().Port()))
 			if err != nil {
-				zerolog.Ctx(ctx).Err(errors.Wrap(err, "start network listener")).Send()
+				return errors.Wrap(err, "create network listener")
 			}
 
 			if err = grpcSrv.Serve(listener); !errors.Is(err, grpc.ErrServerStopped) {

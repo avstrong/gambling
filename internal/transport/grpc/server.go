@@ -35,7 +35,7 @@ func (s *Server) RetrieveBalance(ctx context.Context, input *pb.RetrieveBalanceI
 
 	output, err := s.UService.Balance(ctx, balanceInput)
 	if errors.Is(err, uservice.ErrNotFound) {
-		return nil, status.Errorf(codes.NotFound, "user with id %v not found", balanceInput.UserID.String())
+		return nil, status.Errorf(codes.NotFound, "user with id %v not found", balanceInput.UserID)
 	}
 
 	if err != nil {

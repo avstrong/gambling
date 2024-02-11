@@ -10,8 +10,6 @@ import (
 	"github.com/rs/zerolog"
 )
 
-const readinessEndpoint = "/"
-
 type healthcheckFn func(ctx context.Context) error
 
 type healthcheck struct {

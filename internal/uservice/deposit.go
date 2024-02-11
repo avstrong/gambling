@@ -7,13 +7,12 @@ import (
 	"emperror.dev/errors"
 	"github.com/avstrong/gambling/internal/wallet"
 	"github.com/go-playground/validator/v10"
-	"github.com/google/uuid"
 )
 
 type DepositInput struct {
-	UserID   uuid.UUID       `validate:"required,uuid4"`
-	Amount   float64         `validate:"required,gte=0"`
-	Currency wallet.Currency `validate:"required"`
+	UserID   string          `json:"userID" validate:"required,email"` //nolint:tagliatelle
+	Amount   float64         `json:"amount" validate:"required,gte=0"`
+	Currency wallet.Currency `json:"currency" validate:"required"`
 }
 
 func (i *DepositInput) Validate() error {
@@ -58,8 +57,8 @@ func (s *Service) Deposit(ctx context.Context, input *DepositInput) (*DepositOut
 		return nil, errors.Wrapf(err, "deposit %v amount into an account", input.Amount)
 	}
 
-	if err = s.storage.SaveUser(ctx, u); err != nil {
-		return nil, errors.Wrapf(err, "save user balance %v", u.ID())
+	if err = s.storage.UpdateUser(ctx, u); err != nil {
+		return nil, errors.Wrapf(err, "update user balance %v", u.ID())
 	}
 
 	return &DepositOutput{Balance: balance}, nil

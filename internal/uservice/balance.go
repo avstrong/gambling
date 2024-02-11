@@ -6,11 +6,10 @@ import (
 	"emperror.dev/errors"
 	"github.com/avstrong/gambling/internal/wallet"
 	"github.com/go-playground/validator/v10"
-	"github.com/google/uuid"
 )
 
 type BalanceInput struct {
-	UserID   uuid.UUID       `validate:"required,uuid4"`
+	UserID   string          `validate:"required,email"`
 	Currency wallet.Currency `validate:"required"`
 }
 

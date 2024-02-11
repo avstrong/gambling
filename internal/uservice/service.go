@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/avstrong/gambling/internal/user"
-	"github.com/google/uuid"
 )
 
 type storage interface {
 	SaveUser(ctx context.Context, u *user.User) error
-	GetUser(ctx context.Context, id uuid.UUID) (*user.User, error)
+	UpdateUser(ctx context.Context, u *user.User) error
+	GetUser(ctx context.Context, email string) (*user.User, error)
 	IsAlreadyExistErr(err error) bool
 	IsNotFoundErr(err error) bool
 }

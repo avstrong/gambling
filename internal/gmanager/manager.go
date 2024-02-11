@@ -11,9 +11,12 @@ import (
 
 type storage interface {
 	SaveGame(ctx context.Context, g *game.Game) error
+	UpdateGame(ctx context.Context, g *game.Game) error
 	GetGame(ctx context.Context, id uuid.UUID) (*game.Game, error)
 	SavePlayer(ctx context.Context, player *Player) error
-	GetPlayer(ctx context.Context, id uuid.UUID) (*Player, error)
+	UpdatePlayer(ctx context.Context, player *Player) error
+	GetPlayer(ctx context.Context, id string) (*Player, error)
+	IsAlreadyExistErr(err error) bool
 }
 
 type userManager interface {
@@ -23,12 +26,31 @@ type userManager interface {
 }
 
 type Player struct {
-	UserID      string
-	Wins        int
-	LastWinTime time.Time
+	userID      string
+	wins        int
+	lastWinTime time.Time
+}
+
+func (u *Player) UserID() string {
+	return u.userID
+}
+
+func (u *Player) Wins() int {
+	return u.wins
+}
+
+func (u *Player) LastWinTime() time.Time {
+	return u.lastWinTime
 }
 
 type Manager struct {
 	storage     storage
 	userManager userManager
+}
+
+func New(storage storage, uManager userManager) *Manager {
+	return &Manager{
+		storage:     storage,
+		userManager: uManager,
+	}
 }

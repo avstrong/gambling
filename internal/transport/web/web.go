@@ -7,14 +7,18 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/avstrong/gambling/internal/gmanager"
 	"github.com/avstrong/gambling/internal/uservice"
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog"
 )
 
 type Server struct {
 	srv      *http.Server
 	router   *mux.Router
 	uService *uservice.Service
+	gManager *gmanager.Manager
+	lg       *zerolog.Logger
 }
 
 type Conf struct {
@@ -24,7 +28,7 @@ type Conf struct {
 	ReadHeaderTimeout time.Duration
 }
 
-func New(ctx context.Context, conf *Conf, uService *uservice.Service) (*Server, error) {
+func New(ctx context.Context, conf *Conf, uService *uservice.Service, gManager *gmanager.Manager, lg *zerolog.Logger) (*Server, error) {
 	r := mux.NewRouter()
 
 	//nolint:exhaustruct
@@ -42,6 +46,8 @@ func New(ctx context.Context, conf *Conf, uService *uservice.Service) (*Server, 
 		srv:      srv,
 		router:   r,
 		uService: uService,
+		gManager: gManager,
+		lg:       lg,
 	}
 
 	server.addRoutes(r)
