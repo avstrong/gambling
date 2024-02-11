@@ -14,7 +14,16 @@ Welcome to the alpha version of our simple Gambling simulation game. This projec
 
 ### Prerequisites
 
-Ensure you have Go installed on your system to run or build the application.
+1. Ensure you have Go installed on your system to run or build the application.
+
+2. Before running the project for the first time, it's essential to prepare your local environment. This includes setting up environment variables and performing any required configurations. To automate this process, we have provided a ```bash make init-local-env``` command that prepares everything you need to get started.
+
+```bash
+make init-local-env
+```
+This command will copy the .env.example file to a new .env file that you can then customize for your local setup. It may also perform additional setup tasks as defined in the Makefile.
+
+Please make sure to review and update the .env file with your specific settings before starting the project to ensure it runs correctly in your local development environment.
 
 ### Running the Application
 
