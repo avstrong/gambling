@@ -30,7 +30,7 @@ Please make sure to review and update the .env file with your specific settings 
 To run the application directly:
 
 ```bash
-go run main.go
+go run main.go start
 ```
 
 To build and run the application:
