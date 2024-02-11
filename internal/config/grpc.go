@@ -1,14 +1,33 @@
 package config
 
+import "emperror.dev/errors"
+
 type GRPC struct {
-	GRPCNetworkType string `envconfig:"GRPC_NETWORK_TYPE"`
-	GRPCPort        string `envconfig:"GRPC_PORT"`
+	GRPCNetworkType string `envconfig:"GAMBLING_GRPC_NETWORK_TYPE"`
+	GRPCHost        string `envconfig:"GAMBLING_HOST_PORT"`
+	GRPCPort        string `envconfig:"GAMBLING_GRPC_PORT"`
 }
 
-func (h GRPC) NetworkType() string {
-	return h.GRPCNetworkType
+func (g GRPC) validate() error {
+	if g.GRPCNetworkType == "" {
+		return errors.New("empty GAMBLING_GRPC_NETWORK_TYPE")
+	}
+
+	if g.GRPCPort == "" {
+		return errors.New("empty GAMBLING_GRPC_PORT")
+	}
+
+	return nil
 }
 
-func (h GRPC) Port() string {
-	return h.GRPCPort
+func (g GRPC) NetworkType() string {
+	return g.GRPCNetworkType
+}
+
+func (g GRPC) Host() string {
+	return g.GRPCHost
+}
+
+func (g GRPC) Port() string {
+	return g.GRPCPort
 }

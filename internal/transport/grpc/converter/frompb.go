@@ -1,11 +1,9 @@
 package converter
 
 import (
-	"emperror.dev/errors"
 	"github.com/avstrong/gambling/internal/uservice"
 	"github.com/avstrong/gambling/internal/wallet"
 	pb "github.com/avstrong/gambling/pkg/game"
-	"github.com/google/uuid"
 )
 
 func pbToCurrency(input pb.RetrieveBalanceInput_Currency) wallet.Currency {
@@ -22,13 +20,8 @@ func pbToCurrency(input pb.RetrieveBalanceInput_Currency) wallet.Currency {
 }
 
 func PBToBalanceInput(input *pb.RetrieveBalanceInput) (*uservice.BalanceInput, error) {
-	userID, err := uuid.FromBytes(input.GetUserId())
-	if err != nil {
-		return nil, errors.Wrap(err, "parse user id")
-	}
-
 	return &uservice.BalanceInput{
-		UserID:   userID,
+		UserID:   input.GetUserId(),
 		Currency: pbToCurrency(input.Currency),
 	}, nil
 }

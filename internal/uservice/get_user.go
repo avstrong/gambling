@@ -5,11 +5,10 @@ import (
 
 	"emperror.dev/errors"
 	"github.com/avstrong/gambling/internal/user"
-	"github.com/google/uuid"
 )
 
 type GetUserInput struct {
-	ID uuid.UUID
+	ID string
 }
 
 type GetUserOutput struct {
@@ -27,4 +26,12 @@ func (s *Service) GetUser(ctx context.Context, input *GetUserInput) (*GetUserOut
 	}
 
 	return &GetUserOutput{User: u}, nil
+}
+
+func (s *Service) IsNotFoundErr(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	return errors.Is(err, ErrNotFound)
 }

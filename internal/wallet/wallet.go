@@ -28,14 +28,10 @@ func New(currency Currency) *Wallet {
 	return &Wallet{
 		balance:  0,
 		currency: currency,
-		mu:       sync.Mutex{},
 	}
 }
 
 func (w *Wallet) addTransaction(trxType TransactionType, amount float64) {
-	w.mu.Lock()
-	defer w.mu.Unlock()
-
 	w.transactions = append(w.transactions, NewTransaction(uuid.New(), amount, trxType, time.Now().UTC()))
 }
 

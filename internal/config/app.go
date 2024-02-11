@@ -3,9 +3,9 @@ package config
 import "emperror.dev/errors"
 
 type App struct {
-	AppEnvironment string `envconfig:"APP_ENVIRONMENT"`
-	AppName        string `envconfig:"APP_NAME"`
-	AppLogLevel    int    `envconfig:"APP_LOG_LEVEL"`
+	AppEnvironment string `envconfig:"GAMBLING_APP_ENVIRONMENT"`
+	AppName        string `envconfig:"GAMBLING_APP_NAME"`
+	AppLogLevel    int    `envconfig:"GAMBLING_APP_LOG_LEVEL"`
 }
 
 func (a App) validate() error {
@@ -16,15 +16,15 @@ func (a App) validate() error {
 	}
 
 	if a.AppEnvironment == "" {
-		return errors.New("empty GAME_APP_ENVIRONMENT")
+		return errors.New("empty GAMBLING_APP_ENVIRONMENT")
 	}
 
 	if _, ok := allowedEnvironments[a.AppEnvironment]; !ok {
-		return errors.Errorf("allowed values for GAME_APP_ENVIRONMENT are %v", allowedEnvironments)
+		return errors.Errorf("allowed values for GAMBLING_APP_ENVIRONMENT are %v", allowedEnvironments)
 	}
 
 	if a.AppName == "" {
-		return errors.New("empty GAME_APP_NAME")
+		return errors.New("empty GAMBLING_APP_NAME")
 	}
 
 	allowedLogLevels := map[int]string{
@@ -38,7 +38,7 @@ func (a App) validate() error {
 	}
 
 	if _, ok := allowedLogLevels[a.AppLogLevel]; !ok {
-		return errors.Errorf("allowed values for GAME_APP_LOG_LEVEL are %v", allowedEnvironments)
+		return errors.Errorf("allowed values for GAMBLING_APP_LOG_LEVEL are %v", allowedEnvironments)
 	}
 
 	return nil

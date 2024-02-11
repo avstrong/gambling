@@ -4,15 +4,29 @@ import (
 	"context"
 
 	"emperror.dev/errors"
+	"github.com/avstrong/gambling/internal/game"
 	"github.com/avstrong/gambling/internal/uservice"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
 type StartGameInput struct {
-	ID uuid.UUID
+	ID uuid.UUID `json:"id" validate:"required"`
 }
 
-type StartGameOutput struct{}
+func (i *StartGameInput) Validate() error {
+	validate := validator.New()
+
+	if err := validate.Struct(i); err != nil {
+		return errors.Wrap(err, "validate StartGameInput")
+	}
+
+	return nil
+}
+
+type StartGameOutput struct {
+	Winners game.Players `json:"winners"`
+}
 
 func (m *Manager) Play(ctx context.Context, input *StartGameInput) (*StartGameOutput, error) {
 	g, err := m.storage.GetGame(ctx, input.ID)
@@ -46,20 +60,22 @@ func (m *Manager) Play(ctx context.Context, input *StartGameInput) (*StartGameOu
 
 		if err != nil {
 			// TODO
-			return nil, errors.Wrapf(err, "get user %v", winner.UserID)
+			return nil, errors.Wrapf(err, "get player %v", winner.UserID)
 		}
 
-		p.Wins++
-		p.LastWinTime = g.FinishAt()
+		p.wins++
+		p.lastWinTime = g.FinishAt()
 
-		if err := m.storage.SavePlayer(ctx, p); err != nil {
-			return nil, errors.Wrapf(err, "save player %v", winner.UserID)
+		if err := m.storage.UpdatePlayer(ctx, p); err != nil {
+			return nil, errors.Wrapf(err, "update player %v", winner.UserID)
 		}
 	}
 
-	if err = m.storage.SaveGame(ctx, g); err != nil {
-		return nil, errors.Wrapf(err, "save game %v with name %v", input.ID, g.Name())
+	if err = m.storage.UpdateGame(ctx, g); err != nil {
+		return nil, errors.Wrapf(err, "update game %v with name %v", input.ID, g.Name())
 	}
 
-	return &StartGameOutput{}, nil
+	return &StartGameOutput{
+		Winners: winners,
+	}, nil
 }

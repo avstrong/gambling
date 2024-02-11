@@ -18,6 +18,6 @@ message RetrieveBalanceInput {
     CURRENCY_EUR = 2;
   }
 
-  bytes user_id = 1;
+  string user_id = 1;
   Currency currency = 2;
 }

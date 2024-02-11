@@ -27,7 +27,7 @@ func New(filenames ...string) (*Config, error) {
 
 	var conf Config
 
-	const appPrefix = "Game"
+	const appPrefix = ""
 
 	if err := envconfig.Process(appPrefix, &conf.app); err != nil {
 		return nil, errors.Wrap(err, "parse app envs")
@@ -35,6 +35,10 @@ func New(filenames ...string) (*Config, error) {
 
 	if err := envconfig.Process(appPrefix, &conf.http); err != nil {
 		return nil, errors.Wrap(err, "parse http envs")
+	}
+
+	if err := envconfig.Process(appPrefix, &conf.grpc); err != nil {
+		return nil, errors.Wrap(err, "parse grpc envs")
 	}
 
 	if err := conf.validate(); err != nil {
@@ -51,6 +55,10 @@ func (c Config) validate() error {
 
 	if err := c.http.validate(); err != nil {
 		return errors.Wrap(err, "validate http config")
+	}
+
+	if err := c.grpc.validate(); err != nil {
+		return errors.Wrap(err, "validate grpc config")
 	}
 
 	return nil

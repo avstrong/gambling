@@ -7,23 +7,23 @@ import (
 )
 
 type HTTP struct {
-	HTTPHost                       string `envconfig:"HTTP_HOST"`
-	HTTPPort                       string `envconfig:"HTTP_PORT"`
-	HTTPReadHeaderTimeoutInSeconds int    `envconfig:"HTTP_READ_HEADER_TIMEOUT_IN_SECONDS"`
-	HTTPReadinessEndpoint          string `envconfig:"HTTP_READINESS_ENDPOINT"`
+	HTTPHost                       string `envconfig:"GAMBLING_HTTP_HOST"`
+	HTTPPort                       string `envconfig:"GAMBLING_HTTP_PORT"`
+	HTTPReadHeaderTimeoutInSeconds int    `envconfig:"GAMBLING_HTTP_READ_HEADER_TIMEOUT_IN_SECONDS"`
+	HTTPReadinessEndpoint          string `envconfig:"GAMBLING_HTTP_READINESS_ENDPOINT"`
 }
 
 func (h HTTP) validate() error {
 	if h.HTTPPort == "" {
-		return errors.New("empty GAME_HTTP_PORT")
+		return errors.New("empty GAMBLING_HTTP_PORT")
 	}
 
 	if h.HTTPReadHeaderTimeoutInSeconds <= 0 {
-		return errors.New("GAME_HTTP_READ_HEADER_TIMEOUT_IN_SECONDS is less or equal zero")
+		return errors.New("GAMBLING_HTTP_READ_HEADER_TIMEOUT_IN_SECONDS is less or equal zero")
 	}
 
 	if h.HTTPReadinessEndpoint == "" {
-		return errors.New("empty GAME_HTTP_READINESS_ENDPOINT")
+		return errors.New("empty GAMBLING_HTTP_READINESS_ENDPOINT")
 	}
 
 	return nil

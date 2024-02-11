@@ -26,11 +26,11 @@ const (
 )
 
 type Player struct {
-	UserID uuid.UUID
-	Choice CoinSide
+	UserID string   `json:"userID"` //nolint:tagliatelle
+	Choice CoinSide `json:"choice"`
 }
 
-type Players []*Player
+type Players map[string]*Player
 
 type Config struct {
 	PlayerCount   int
@@ -97,7 +97,11 @@ func (g *Game) AddPlayer(player *Player) error {
 		return errors.Errorf("cannot add player, game %v is in state %v", g.name, g.state)
 	}
 
-	g.players = append(g.players, player)
+	if g.players == nil {
+		g.players = make(map[string]*Player)
+	}
+
+	g.players[player.UserID] = player
 
 	if len(g.players) == g.config.PlayerCount {
 		g.state = stateWaitingToStart
@@ -112,8 +116,10 @@ func (g *Game) Play() error {
 	}
 
 	g.state = statePlaying
-	//nolint:gosec,gomnd
-	g.resultSide = rand.Intn(2) == 0
+	//nolint:gosec
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	//nolint:gomnd
+	g.resultSide = rd.Intn(2) == 0
 
 	g.finish()
 
@@ -123,9 +129,13 @@ func (g *Game) Play() error {
 func (g *Game) finish() {
 	g.state = stateFinished
 
+	if g.winners == nil {
+		g.winners = make(map[string]*Player)
+	}
+
 	for _, player := range g.players {
 		if g.resultSide == player.Choice {
-			g.winners = append(g.winners, player)
+			g.winners[player.UserID] = player
 		}
 	}
 
