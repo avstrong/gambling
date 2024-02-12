@@ -4,7 +4,7 @@ import "emperror.dev/errors"
 
 type GRPC struct {
 	GRPCNetworkType string `envconfig:"GAMBLING_GRPC_NETWORK_TYPE"`
-	GRPCHost        string `envconfig:"GAMBLING_HOST_PORT"`
+	GRPCHost        string `envconfig:"GAMBLING_GRPC_HOST"`
 	GRPCPort        string `envconfig:"GAMBLING_GRPC_PORT"`
 }
 
