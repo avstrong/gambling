@@ -34,6 +34,9 @@ func (s *Suite) TestNew_MustReadAllDataNoErr() {
 		"GAMBLING_HTTP_PORT":                           "3434",
 		"GAMBLING_HTTP_READ_HEADER_TIMEOUT_IN_SECONDS": "10",
 		"GAMBLING_HTTP_READINESS_ENDPOINT":             "/",
+
+		"GAMBLING_GRPC_NETWORK_TYPE": "tcp",
+		"GAMBLING_GRPC_PORT":         "2020",
 	}
 
 	for name, value := range envs {
@@ -59,6 +62,11 @@ func (s *Suite) TestNew_MustReadAllDataNoErr() {
 		intValue, err := strconv.ParseInt(envs["GAMBLING_HTTP_READ_HEADER_TIMEOUT_IN_SECONDS"], 10, 8)
 		s.Require().NoError(err)
 		s.Require().Equal(time.Duration(int(intValue))*time.Second, conf.HTTP().ReadHeaderTimeout())
+	})
+
+	s.Run("grpc_envs", func() {
+		s.Require().Equal(envs["GAMBLING_GRPC_NETWORK_TYPE"], conf.GRPC().NetworkType())
+		s.Require().Equal(envs["GAMBLING_GRPC_PORT"], conf.GRPC().Port())
 	})
 
 	s.T().Cleanup(func() {

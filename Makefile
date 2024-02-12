@@ -77,8 +77,6 @@ generate-proto:
         --grpc-gateway_opt=paths=import \
         api/proto/server.proto
 
-COLOR := "\e[1;36m%s\e[0m\n"
-
 .PHONY: register-user
 register-user: ## Register a new user with dynamic email
 	@if [ -z "$(email)" ]; then \
